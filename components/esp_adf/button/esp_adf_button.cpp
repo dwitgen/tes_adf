@@ -23,6 +23,33 @@ void ButtonHandler::setup() {
     ESP_LOGI(TAG, "Setting up ButtonHandler...");
       // Initialize the peripheral set with increased queue size
     ESP_LOGI(TAG, "Initializing peripheral set...");
+
+    uint32_t volume_sensor_key = 0;
+    for (auto *sensor : App.get_sensors()) {
+        if (sensor->get_name() == "generic_volume_sensor") {
+            volume_sensor_key = sensor->get_object_id_hash();
+            break;
+        }
+    }
+
+    if (volume_sensor_key != 0) {
+        this->volume_sensor = App.get_sensor_by_key(volume_sensor_key, true);
+        ESP_LOGI(TAG, "Internal generic volume sensor initialized successfully: %s", this->volume_sensor->get_name().c_str());
+    } else {
+        ESP_LOGE(TAG, "Failed to find key for internal generic volume sensor");
+    }
+
+    if (this->volume_sensor == nullptr) {
+        ESP_LOGE(TAG, "Failed to get internal generic volume sensor component");
+    } else {
+        ESP_LOGI(TAG, "Internal generic volume sensor initialized correctly");
+    }
+
+    this->set_volume(volume_);
+
+    int initial_volume = this->get_current_volume();
+    this->set_volume(initial_volume);
+    
     esp_periph_config_t periph_cfg = {
         .task_stack = 16384, //8192,
         .task_prio = 10, //5,
