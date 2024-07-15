@@ -35,6 +35,7 @@ class ButtonHandler {
 
   void set_volume(int volume);
   int get_current_volume();
+  sensor::Sensor *volume_sensor = nullptr;
 
  protected:
   static void button_event_handler(void *handler_args, esp_event_base_t base, int32_t id, void *event_data);
