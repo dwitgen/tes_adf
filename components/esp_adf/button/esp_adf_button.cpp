@@ -17,6 +17,7 @@ namespace esp_adf {
 const char *const ButtonHandler::TAG = "esp_adf.button";
 
 void ButtonHandler::setup() {
+    ESP_LOGI(TAG, "Setting up ButtonHandler...");
       // Initialize the peripheral set with increased queue size
     ESP_LOGI(TAG, "Initializing peripheral set...");
     esp_periph_config_t periph_cfg = {
@@ -56,19 +57,19 @@ void ButtonHandler::setup() {
     periph_service_handle_t input_ser = input_key_service_create(&input_cfg);
     input_key_service_add_key(input_ser, input_key_info, INPUT_KEY_NUM);
     periph_service_set_callback(input_ser, ButtonHandler::input_key_service_cb, this); 
+    ESP_LOGI(TAG, "ButtonHandler setup completed");
 }
 
-/*esp_err_t ButtonHandler::input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx) {
-    ESPADFSpeaker *instance = static_cast<ESPADFSpeaker*>(ctx);
+esp_err_t ButtonHandler::input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx) {
+    ButtonHandler *instance = static_cast<ButtonHandler*>(ctx);  // Use ButtonHandler instance
     int32_t id = static_cast<int32_t>(reinterpret_cast<uintptr_t>(evt->data));
 
-    // Read the ADC value
-    int adc_value = adc1_get_raw(ADC1_CHANNEL_3);  // Replace with your ADC channel
-    ESP_LOGI("ButtonHandler", "Button event callback received: id=%d, event type=%d, ADC value=%d", id, evt->type, adc_value);
+    ESP_LOGI(TAG, "Button event callback received: id=%d, event type=%d", id, evt->type);
 
     instance->handle_button_event(id, evt->type);
     return ESP_OK;
-}*/
+}
+
 
 void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
     ESP_LOGI("ButtonHandler", "Handle Button event received: id=%d", id);
