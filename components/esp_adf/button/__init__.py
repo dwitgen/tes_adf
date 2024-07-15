@@ -19,6 +19,7 @@ CONF_BUTTON4_SENSOR = "button4_sensor"
 CONF_BUTTON5_SENSOR = "button5_sensor"
 CONF_BUTTON6_SENSOR = "button6_sensor"
 
+esp_adf_ns = cg.esphome_ns.namespace('esp_adf')
 ESPADFButtonHandler = esp_adf_ns.class_("ButtonHandler", cg.Component)
 
 CONFIG_SCHEMA = cv.All(
