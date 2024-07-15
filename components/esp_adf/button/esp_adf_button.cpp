@@ -160,26 +160,32 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
             case 1:
                 ESP_LOGI("ButtonHandler", "Record button detected");
                 handle_rec_button();
+                if (button1_sensor) button1_sensor->publish_state(event_type);
                 break;
             case 2:
                 ESP_LOGI("ButtonHandler", "Set button detected");
                 handle_set_button();
+                if (button2_sensor) button2_sensor->publish_state(event_type);
                 break;
             case 3:
                 ESP_LOGI("ButtonHandler", "Play button detected");
                 handle_play_button();
+                if (button3_sensor) button3_sensor->publish_state(event_type);
                 break;
             case 4:
                 ESP_LOGI("ButtonHandler", "Mode button detected");
                 handle_mode_button();
+                if (button4_sensor) button4_sensor->publish_state(event_type);
                 break;
             case 5:
                 ESP_LOGI("ButtonHandler", "Volume down detected");
-                volume_down(); // Comment out or handle appropriately
+                volume_down(); 
+                if (button5_sensor) button5_sensor->publish_state(event_type);
                 break;
             case 6:
                 ESP_LOGI("ButtonHandler", "Volume up detected");
-                volume_up(); // Comment out or handle appropriately
+                volume_up(); 
+                if (button6_sensor) button6_sensor->publish_state(event_type);
                 break;
             default:
                 ESP_LOGW("ButtonHandler", "Unhandled button event id: %d", id);
