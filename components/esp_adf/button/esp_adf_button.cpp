@@ -73,6 +73,43 @@ esp_err_t ButtonHandler::input_key_service_cb(periph_service_handle_t handle, pe
     return ESP_OK;
 }
 
+void ButtonHandler::set_volume(int volume) {
+    ESP_LOGI(TAG, "Setting volume to %d", volume);
+    
+    if (volume < 0) volume = 0;
+    if (volume > 100) volume = 100;
+    this->volume_ = volume;
+
+    audio_board_handle_t board_handle = audio_board_init();
+    esp_err_t err = audio_hal_set_volume(board_handle->audio_hal, volume);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error setting volume: %s", esp_err_to_name(err));
+    }
+
+    if (this->volume_sensor != nullptr) {
+        this->volume_sensor->publish_state(this->volume_);
+    } else {
+        ESP_LOGE(TAG, "Volume sensor is not initialized");
+    }
+}
+
+int ButtonHandler::get_current_volume() {
+    audio_board_handle_t board_handle = audio_board_init();
+    if (board_handle == nullptr) {
+        ESP_LOGE(TAG, "Failed to initialize audio board");
+        return 0;
+    }
+
+    int current_volume = 0;
+    esp_err_t read_err = audio_hal_get_volume(board_handle->audio_hal, &current_volume);
+    if (read_err == ESP_OK) {
+        ESP_LOGI(TAG, "Current device volume: %d", current_volume);
+    } else {
+        ESP_LOGE(TAG, "Error reading current volume: %s", esp_err_to_name(read_err));
+    }
+
+    return current_volume;
+}
 
 void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
     ESP_LOGI("ButtonHandler", "Handle Button event received: id=%d", id);
