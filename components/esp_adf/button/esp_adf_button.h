@@ -8,6 +8,10 @@
 #include "../esp_adf.h"
 #include <esp_event.h>  // Include the header for esp_event_base_t
 
+#include "esphome/core/component.h"
+#include "esphome/core/helpers.h"
+#include "esphome/components/sensor/sensor.h"
+
 #include <board.h>
 #include "esp_peripherals.h"
 #include "periph_adc_button.h"
