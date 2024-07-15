@@ -1,6 +1,8 @@
 #ifndef ESP_ADF_BUTTON_H
 #define ESP_ADF_BUTTON_H
 
+#include "../esp_adf.h"
+
 #include <board.h>
 #include "esp_peripherals.h"
 #include "periph_adc_button.h"
