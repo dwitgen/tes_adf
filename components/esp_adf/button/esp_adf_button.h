@@ -23,7 +23,7 @@ namespace esp_adf {
 
 //class ESPADFSpeaker;  // Forward declaration
 
-class ButtonHandler {
+class ButtonHandler : public Component {
  public:
   
   void setup(); // override;
