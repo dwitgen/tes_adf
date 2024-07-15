@@ -154,9 +154,9 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
 
     if (current_time - last_button_press[id] > debounce_time) {
         switch (id) {
-            case 0:
-                ESP_LOGI("ButtonHandler", "Unknown Button detected");
-                break;
+            //case 0:
+            //    ESP_LOGI("ButtonHandler", "Unknown Button detected");
+            //    break;
             case BUTTON_REC_ID:
                 ESP_LOGI("ButtonHandler", "Record button detected");
                 handle_rec_button();
