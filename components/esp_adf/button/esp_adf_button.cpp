@@ -89,7 +89,6 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
         switch (id) {
             case 0:
                 ESP_LOGI("ButtonHandler", "Unknown Button detected");
-                //volume_down();
                 break;
             case 1:
                 ESP_LOGI("ButtonHandler", "Record button detected");
@@ -136,18 +135,22 @@ void ButtonHandler::volume_down() {
 }
 
 void ButtonHandler::handle_mode_button() {
+     ESP_LOGI(TAG, "Mode button pressed");
     // Implementation of mode button handling
 }
 
 void ButtonHandler::handle_play_button() {
+    ESP_LOGI(TAG, "Play button pressed");
     // Implementation of play button handling
 }
 
 void ButtonHandler::handle_set_button() {
+    ESP_LOGI(TAG, "Set button pressed");
     // Implementation of set button handling
 }
 
 void ButtonHandler::handle_rec_button() {
+    ESP_LOGI(TAG, "Record button pressed");
     // Implementation of record button handling
 }
 
