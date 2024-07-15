@@ -42,12 +42,12 @@ class ButtonHandler : public Component {
   sensor::Sensor *volume_sensor = nullptr;
 
   // Sensors for button states
-  sensor::Sensor *button1_sensor = nullptr;
-  sensor::Sensor *button2_sensor = nullptr;
-  sensor::Sensor *button3_sensor = nullptr;
-  sensor::Sensor *button4_sensor = nullptr;
-  sensor::Sensor *button5_sensor = nullptr;
-  sensor::Sensor *button6_sensor = nullptr;
+  sensor::Sensor *button1_sensor = new sensor::Sensor();
+  sensor::Sensor *button2_sensor = new sensor::Sensor();
+  sensor::Sensor *button3_sensor = new sensor::Sensor();
+  sensor::Sensor *button4_sensor = new sensor::Sensor();
+  sensor::Sensor *button5_sensor = new sensor::Sensor();
+  sensor::Sensor *button6_sensor = new sensor::Sensor();
 
  protected:
   static void button_event_handler(void *handler_args, esp_event_base_t base, int32_t id, void *event_data);
