@@ -17,6 +17,9 @@ namespace esp_adf {
 
 class ButtonHandler {
  public:
+
+  void setup() override;
+ 
   static esp_err_t input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx);
   static void button_event_handler(void *handler_args, esp_event_base_t base, int32_t id, void *event_data);
   static void handle_button_event(int32_t id, int32_t event_type);  // Add this declaration
