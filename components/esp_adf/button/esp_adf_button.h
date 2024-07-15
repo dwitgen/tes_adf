@@ -1,5 +1,9 @@
-#ifndef ESP_ADF_BUTTON_H
-#define ESP_ADF_BUTTON_H
+//#ifndef ESP_ADF_BUTTON_H
+//#define ESP_ADF_BUTTON_H
+
+#pragma once
+
+#ifdef USE_ESP_IDF
 
 #include "../esp_adf.h"
 #include <esp_event.h>  // Include the header for esp_event_base_t
@@ -43,5 +47,5 @@ class ButtonHandler {
 
 }  // namespace esp_adf
 }  // namespace esphome
-
-#endif // ESP_ADF_BUTTON_H
+#endif  // USE_ESP_IDF
+//#endif // ESP_ADF_BUTTON_H
