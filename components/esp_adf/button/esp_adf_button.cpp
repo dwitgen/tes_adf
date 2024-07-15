@@ -140,10 +140,10 @@ int ButtonHandler::get_current_volume() {
 
 void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
     ESP_LOGI("ButtonHandler", "Handle Button event received: id=%d", id);
-    /*if (event_type != 1 && event_type != 3) { // Only process the event if the event_type is 1 click action or 3 long press action
+    if (event_type != 1 && event_type != 3) { // Only process the event if the event_type is 1 click action or 3 long press action
         ESP_LOGI("ButtonHandler", "Ignoring event with type: %d", event_type);
         return;
-    }*/
+    }
     uint32_t current_time = millis();
     static uint32_t last_button_press[7] = {0};
     uint32_t debounce_time = 200;
@@ -175,11 +175,11 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
                 break;
             case 5:
                 ESP_LOGI("ButtonHandler", "Volume down detected");
-                // instance->volume_down(); // Comment out or handle appropriately
+                volume_down(); // Comment out or handle appropriately
                 break;
             case 6:
                 ESP_LOGI("ButtonHandler", "Volume up detected");
-                // instance->volume_up(); // Comment out or handle appropriately
+                volume_up(); // Comment out or handle appropriately
                 break;
             default:
                 ESP_LOGW("ButtonHandler", "Unhandled button event id: %d", id);
