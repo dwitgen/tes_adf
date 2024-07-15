@@ -16,7 +16,7 @@ namespace esp_adf {
 
 const char *const ButtonHandler::TAG = "esp_adf.button";
 
-void ESPADFSpeaker::setup() {
+void ButtonHandler::setup() {
       // Initialize the peripheral set with increased queue size
     ESP_LOGI(TAG, "Initializing peripheral set...");
     esp_periph_config_t periph_cfg = {
