@@ -10,7 +10,7 @@
 namespace esphome {
 namespace esp_adf {
 
-static const char *const TAG = "esp_adf.button";
+const char *const ButtonHandler::TAG = "esp_adf.button";
 
 /*esp_err_t ButtonHandler::input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx) {
     ESPADFSpeaker *instance = static_cast<ESPADFSpeaker*>(ctx);
