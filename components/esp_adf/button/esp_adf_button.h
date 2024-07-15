@@ -31,6 +31,7 @@ class ButtonHandler {
   int get_current_volume();
 
  private:
+  static const char *const TAG;
   int volume_ = 50;  // Default volume level
 };
 
