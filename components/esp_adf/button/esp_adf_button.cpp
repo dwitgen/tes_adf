@@ -74,6 +74,18 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
     }
 }
 
+void ButtonHandler::volume_up() {
+    ESP_LOGI(TAG, "Volume up button pressed");
+    //int current_volume = this->get_current_volume();
+    //this->set_volume(current_volume + 10);
+}
+
+void ButtonHandler::volume_down() {
+    ESP_LOGI(TAG, "Volume down button pressed");
+    //int current_volume = this->get_current_volume();
+    //this->set_volume(current_volume - 10);
+}
+
 void ButtonHandler::handle_mode_button() {
     // Implementation of mode button handling
 }
