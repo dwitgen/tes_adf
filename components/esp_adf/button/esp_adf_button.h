@@ -20,6 +20,8 @@ class ButtonHandler {
   static esp_err_t input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx);
   static void button_event_handler(void *handler_args, esp_event_base_t base, int32_t id, void *event_data);
   static void handle_button_event(int32_t id, int32_t event_type);  // Add this declaration
+  static void volume_up();
+  static void volume_down();
   static void handle_mode_button();
   static void handle_play_button();
   static void handle_set_button();
