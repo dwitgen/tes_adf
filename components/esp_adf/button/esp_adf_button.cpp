@@ -3,6 +3,10 @@
 #include <board.h>
 #include <audio_hal.h>
 
+#include "esphome/core/application.h"
+#include "esphome/core/hal.h"
+#include "esphome/core/log.h"
+
 namespace esphome {
 namespace esp_adf {
 
