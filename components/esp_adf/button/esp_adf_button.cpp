@@ -177,7 +177,7 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
                 ESP_LOGI("ButtonHandler", "Volume down detected");
                 volume_down(); // Comment out or handle appropriately
                 break;
-            case 5:
+            case 6:
                 ESP_LOGI("ButtonHandler", "Volume up detected");
                 volume_up(); // Comment out or handle appropriately
                 break;
