@@ -105,8 +105,8 @@ async def to_code(config):
          esp32.add_extra_build_file(
         "src/esphome/components/esp_adf/button/esp_adf_button.cpp",
         "https://raw.githubusercontent.com/dwitgen/test_adf/main/components/esp_adf/button/esp_adf_button.cpp",
-    )
-    esp32.add_extra_build_file(
-        "src/esphome/components/esp_adf/button/esp_adf_button.h",
-        "https://raw.githubusercontent.com/dwitgen/test_adf/main/components/esp_adf/button/esp_adf_button.h",
-    )
+        )
+        esp32.add_extra_build_file(
+            "src/esphome/components/esp_adf/button/esp_adf_button.h",
+            "https://raw.githubusercontent.com/dwitgen/test_adf/main/components/esp_adf/button/esp_adf_button.h",
+        )
