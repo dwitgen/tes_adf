@@ -7,10 +7,56 @@
 #include "esphome/core/hal.h"
 #include "esphome/core/log.h"
 
+#include "esp_peripherals.h"
+#include "periph_adc_button.h"
+#include "input_key_service.h"
+
 namespace esphome {
 namespace esp_adf {
 
 const char *const ButtonHandler::TAG = "esp_adf.button";
+
+void ESPADFSpeaker::setup() {
+      // Initialize the peripheral set with increased queue size
+    ESP_LOGI(TAG, "Initializing peripheral set...");
+    esp_periph_config_t periph_cfg = {
+        .task_stack = 16384, //8192,
+        .task_prio = 10, //5,
+        .task_core = 0,
+        .extern_stack = false
+    };
+    esp_periph_set_handle_t set = esp_periph_set_init(&periph_cfg);
+    if (!set) {
+        ESP_LOGE(TAG, "Failed to initialize peripheral set");
+        return;
+    }
+
+    // Initialize the audio board keys
+    ESP_LOGI(TAG, "Initializing audio board keys...");
+    audio_board_key_init(set);
+
+    ESP_LOGI(TAG, "[ 3 ] Create and start input key service");
+    input_key_service_info_t input_key_info[] = INPUT_KEY_DEFAULT_INFO();
+    input_key_service_cfg_t input_cfg = {
+        .based_cfg = {
+            .task_stack = ADC_BUTTON_STACK_SIZE, //4 * 1024, // INPUT_KEY_SERVICE_TASK_STACK_SIZE,
+            .task_prio = ADC_BUTTON_TASK_PRIORITY, //10, //INPUT_KEY_SERVICE_TASK_PRIORITY,
+            .task_core = ADC_BUTTON_TASK_CORE_ID, //INPUT_KEY_SERVICE_TASK_ON_CORE,
+            .task_func = nullptr,
+            .extern_stack = false,
+            .service_start = nullptr,
+            .service_stop = nullptr,
+            .service_destroy = nullptr,
+            .service_ioctl = nullptr,
+            .service_name = nullptr,
+            .user_data = nullptr
+        },
+        .handle = set
+    };
+    periph_service_handle_t input_ser = input_key_service_create(&input_cfg);
+    input_key_service_add_key(input_ser, input_key_info, INPUT_KEY_NUM);
+    periph_service_set_callback(input_ser, ButtonHandler::input_key_service_cb, this); 
+}
 
 /*esp_err_t ButtonHandler::input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx) {
     ESPADFSpeaker *instance = static_cast<ESPADFSpeaker*>(ctx);
