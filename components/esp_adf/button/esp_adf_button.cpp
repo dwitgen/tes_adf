@@ -121,11 +121,11 @@ void ButtonHandler::set_volume(int volume) {
 }
 
 int ButtonHandler::get_current_volume() {
-    audio_board_handle_t board_handle = audio_board_init();
+    /*audio_board_handle_t board_handle = audio_board_init();
     if (board_handle == nullptr) {
         ESP_LOGE(TAG, "Failed to initialize audio board");
         return 0;
-    }
+    }*/
 
     int current_volume = 0;
     esp_err_t read_err = audio_hal_get_volume(board_handle->audio_hal, &current_volume);
@@ -157,27 +157,27 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
             case 0:
                 ESP_LOGI("ButtonHandler", "Unknown Button detected");
                 break;
-            case 1:
+            case BUTTON_REC_ID:
                 ESP_LOGI("ButtonHandler", "Record button detected");
                 handle_rec_button();
                 break;
-            case 2:
+            case BUTTON_SET_ID:
                 ESP_LOGI("ButtonHandler", "Set button detected");
                 handle_set_button();
                 break;
-            case 3:
+            case BUTTON_PLAY_ID:
                 ESP_LOGI("ButtonHandler", "Play button detected");
                 handle_play_button();
                 break;
-            case 4:
+            case BUTTON_MODE_ID:
                 ESP_LOGI("ButtonHandler", "Mode button detected");
                 handle_mode_button();
                 break;
-            case 5:
+            case BUTTON_VOLDOWN_ID:
                 ESP_LOGI("ButtonHandler", "Volume down detected");
                 volume_down(); // Comment out or handle appropriately
                 break;
-            case 6:
+            case BUTTON_VOLUP_ID:
                 ESP_LOGI("ButtonHandler", "Volume up detected");
                 volume_up(); // Comment out or handle appropriately
                 break;
@@ -192,13 +192,13 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
 void ButtonHandler::volume_up() {
     ESP_LOGI(TAG, "Volume up button pressed");
     int current_volume = this->get_current_volume();
-    this->set_volume(current_volume + 10);
+    this->set_volume(current_volume + 5);
 }
 
 void ButtonHandler::volume_down() {
     ESP_LOGI(TAG, "Volume down button pressed");
     int current_volume = this->get_current_volume();
-    this->set_volume(current_volume - 10);
+    this->set_volume(current_volume - 5);
 }
 
 void ButtonHandler::handle_mode_button() {
