@@ -1,4 +1,7 @@
 #include "esp_adf_button.h"
+
+#ifdef USE_ESP_IDF
+
 //#include "esp_adf_speaker.h"
 #include <board.h>
 #include <audio_hal.h>
@@ -156,3 +159,4 @@ void ButtonHandler::handle_rec_button() {
 
 }  // namespace esp_adf
 }  // namespace esphome
+#endif  // USE_ESP_IDF
