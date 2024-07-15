@@ -4,6 +4,8 @@
 
 #include <driver/i2s.h>
 #include <driver/gpio.h>
+#include <driver/adc.h>
+#include <esp_adc_cal.h>
 
 #include "esphome/core/application.h"
 #include "esphome/core/hal.h"
@@ -14,17 +16,75 @@
 #include <i2s_stream.h>
 #include <raw_stream.h>
 
+#ifdef USE_ESP_ADF_BOARD
+#include <board.h>
+#endif
+
 namespace esphome {
 namespace esp_adf {
 
 static const size_t BUFFER_COUNT = 50;
-
 static const char *const TAG = "esp_adf.speaker";
 
-#define PA_ENABLE_GPIO GPIO_NUM_12 //get_pa_enable_gpio()		
+// Define ADC configuration
+#define ADC_WIDTH_BIT    ADC_WIDTH_BIT_12
+#define ADC_ATTEN        ADC_ATTEN_DB_12
+
+void ESPADFSpeaker::set_volume(int volume) {
+    ESP_LOGI(TAG, "Setting volume to %d", volume);
+    
+    // Ensure the volume is within the range 0-100
+    if (volume < 0) volume = 0;
+    if (volume > 100) volume = 100;
+    this->volume_ = volume;
+
+    // Set volume using HAL
+    
+    //audio_board_handle_t board_handle = audio_board_init();
+    esp_err_t err = audio_hal_set_volume(board_handle_->audio_hal, volume);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error setting volume: %s", esp_err_to_name(err));
+    }
+
+    // Update the volume sensor
+    if (this->volume_sensor != nullptr) {
+      this->volume_sensor->publish_state(this->volume_);
+    } else {
+      ESP_LOGE(TAG, "Volume sensor is not initialized");
+    }
+}
+int ESPADFSpeaker::get_current_volume() {
+  
+  int current_volume = 0;
+  esp_err_t read_err = audio_hal_get_volume(board_handle_->audio_hal, &current_volume);
+  if (read_err == ESP_OK) {
+    ESP_LOGI(TAG, "Current device volume: %d", current_volume);
+  } else {
+    ESP_LOGE(TAG, "Error reading current volume: %s", esp_err_to_name(read_err));
+  }
+
+  return current_volume;
+}
+void ESPADFSpeaker::volume_up() {
+    ESP_LOGI(TAG, "Volume up button pressed");
+    int current_volume = this->get_current_volume();
+    this->set_volume(current_volume + 10);
+}
+
+void ESPADFSpeaker::volume_down() {
+    ESP_LOGI(TAG, "Volume down button pressed");
+    int current_volume = this->get_current_volume();
+    this->set_volume(current_volume - 10);
+}
 
 void ESPADFSpeaker::setup() {
   ESP_LOGCONFIG(TAG, "Setting up ESP ADF Speaker...");
+
+  #ifdef USE_ESP_ADF_BOARD
+  // Use the PA enable pin from board configuration
+  gpio_num_t pa_enable_gpio = static_cast<gpio_num_t>(get_pa_enable_gpio());
+  int but_channel = INPUT_BUTOP_ID;
+  #endif
 
   gpio_config_t io_conf;
   io_conf.intr_type = GPIO_INTR_DISABLE;
@@ -54,6 +114,49 @@ void ESPADFSpeaker::setup() {
     this->mark_failed();
     return;
   }
+
+ // Find the key for the generic volume sensor
+  uint32_t volume_sensor_key = 0;
+  for (auto *sensor : App.get_sensors()) {
+    if (sensor->get_name() == "generic_volume_sensor") {
+      volume_sensor_key = sensor->get_object_id_hash();
+      break;
+    }
+  }
+
+  // Use the key to get the sensor
+  if (volume_sensor_key != 0) {
+    this->volume_sensor = App.get_sensor_by_key(volume_sensor_key, true);
+    ESP_LOGI(TAG, "Internal generic volume sensor initialized successfully: %s", this->volume_sensor->get_name().c_str());
+  } else {
+    ESP_LOGE(TAG, "Failed to find key for internal generic volume sensor");
+  }
+
+  if (this->volume_sensor == nullptr) {
+    ESP_LOGE(TAG, "Failed to get internal generic volume sensor component");
+  } else {
+    ESP_LOGI(TAG, "Internal generic volume sensor initialized correctly");
+  }
+
+  // Initialize the audio board and store the handle
+  this->board_handle_ = audio_board_init();
+  if (this->board_handle_ == nullptr) {
+      ESP_LOGE(TAG, "Failed to initialize audio board");
+      this->mark_failed();
+      return;
+  }
+    
+  // Set initial volume
+  this->set_volume(volume_); // Set initial volume to 50%
+
+   // Read and set initial volume
+  int initial_volume = this->get_current_volume();
+  this->set_volume(initial_volume);
+  
+  // Configure ADC for volume control
+  adc1_config_width(ADC_WIDTH_BIT);
+  adc1_config_channel_atten((adc1_channel_t)but_channel, ADC_ATTEN);
+   
 }
 
 void ESPADFSpeaker::start() { this->state_ = speaker::STATE_STARTING; }
@@ -71,7 +174,8 @@ void ESPADFSpeaker::player_task(void *params) {
   TaskEvent event;
   event.type = TaskEventType::STARTING;
   xQueueSend(this_speaker->event_queue_, &event, portMAX_DELAY);
-
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
   i2s_driver_config_t i2s_config = {
       .mode = (i2s_mode_t) (I2S_MODE_MASTER | I2S_MODE_TX),
       .sample_rate = 16000,
@@ -79,15 +183,15 @@ void ESPADFSpeaker::player_task(void *params) {
       .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
       .communication_format = I2S_COMM_FORMAT_STAND_I2S,
       .intr_alloc_flags = ESP_INTR_FLAG_LEVEL2 | ESP_INTR_FLAG_IRAM,
-      .dma_buf_count = 8,
-      .dma_buf_len = 1024,
+      .dma_buf_count = 8, 
+      .dma_buf_len = 1024, 
       .use_apll = false,
       .tx_desc_auto_clear = true,
       .fixed_mclk = 0,
       .mclk_multiple = I2S_MCLK_MULTIPLE_256,
       .bits_per_chan = I2S_BITS_PER_CHAN_DEFAULT,
   };
-
+  #pragma GCC diagnostic pop
   audio_pipeline_cfg_t pipeline_cfg = {
       .rb_size = 8 * 1024,
   };
@@ -275,6 +379,23 @@ void ESPADFSpeaker::loop() {
     case speaker::STATE_STOPPED:
       break;
   }
+   // Read ADC value for button control
+   /* int adc_value = adc1_get_raw((adc1_channel_t)INPUT_BUTOP_ID);
+    if (adc_value < 0) {
+        ESP_LOGE(TAG, "ADC read error");
+        return;
+    }
+
+    //ESP_LOGD(TAG, "ADC value: %d", adc_value);
+    
+    // Determine button press based on ADC value
+    if (adc_value >= VOL_UP_THRESHOLD_LOW && adc_value <= VOL_UP_THRESHOLD_HIGH) {
+        ESP_LOGI(TAG, "Volume up detected");
+        this->volume_up();
+    } else if (adc_value >= VOL_DOWN_THRESHOLD_LOW && adc_value <= VOL_DOWN_THRESHOLD_HIGH) {
+        ESP_LOGI(TAG, "Volume down detected");
+        this->volume_down();
+    }*/
 }
 
 size_t ESPADFSpeaker::play(const uint8_t *data, size_t length) {
