@@ -157,27 +157,27 @@ void ButtonHandler::handle_button_event(int32_t id, int32_t event_type) {
             //case 0:
             //    ESP_LOGI("ButtonHandler", "Unknown Button detected");
             //    break;
-            case INPUT_KEY_USER_ID_REC:
+            case 1:
                 ESP_LOGI("ButtonHandler", "Record button detected");
                 handle_rec_button();
                 break;
-            case INPUT_KEY_USER_ID_SET:
+            case 2:
                 ESP_LOGI("ButtonHandler", "Set button detected");
                 handle_set_button();
                 break;
-            case INPUT_KEY_USER_ID_PLAY:
+            case 3:
                 ESP_LOGI("ButtonHandler", "Play button detected");
                 handle_play_button();
                 break;
-            case INPUT_KEY_USER_ID_MODE:
+            case 4:
                 ESP_LOGI("ButtonHandler", "Mode button detected");
                 handle_mode_button();
                 break;
-            case INPUT_KEY_USER_ID_VOLDOWN:
+            case 5:
                 ESP_LOGI("ButtonHandler", "Volume down detected");
                 volume_down(); // Comment out or handle appropriately
                 break;
-            case INPUT_KEY_USER_ID_VOLUP:
+            case 5:
                 ESP_LOGI("ButtonHandler", "Volume up detected");
                 volume_up(); // Comment out or handle appropriately
                 break;
