@@ -2,6 +2,7 @@
 #define ESP_ADF_BUTTON_H
 
 #include "../esp_adf.h"
+#include <esp_event.h>  // Include the header for esp_event_base_t
 
 #include <board.h>
 #include "esp_peripherals.h"
@@ -18,6 +19,7 @@ class ButtonHandler {
  public:
   static esp_err_t input_key_service_cb(periph_service_handle_t handle, periph_service_event_t *evt, void *ctx);
   static void button_event_handler(void *handler_args, esp_event_base_t base, int32_t id, void *event_data);
+  static void handle_button_event(int32_t id, int32_t event_type);  // Add this declaration
   static void handle_mode_button();
   static void handle_play_button();
   static void handle_set_button();
@@ -27,4 +29,4 @@ class ButtonHandler {
 }  // namespace esp_adf
 }  // namespace esphome
 
-#endif// ESP_ADF_BUTTON_H
+#endif // ESP_ADF_BUTTON_H
