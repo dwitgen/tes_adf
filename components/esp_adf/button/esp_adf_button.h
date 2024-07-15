@@ -26,6 +26,12 @@ class ButtonHandler {
   static void handle_play_button();
   static void handle_set_button();
   static void handle_rec_button();
+
+  void set_volume(int volume);
+  int get_current_volume();
+
+ private:
+  int volume_ = 50;  // Default volume level
 };
 
 }  // namespace esp_adf
