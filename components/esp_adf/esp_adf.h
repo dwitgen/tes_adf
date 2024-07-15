@@ -1,28 +1,56 @@
-#include "esp_adf.h"
-#include "esphome/core/defines.h"
+#pragma once
 
 #ifdef USE_ESP_IDF
 
-#ifdef USE_ESP_ADF_BOARD
-#include <board.h>
-#endif
-
-#include "esphome/core/log.h"
+#include "esphome/core/component.h"
+#include "esphome/core/helpers.h"
 
 namespace esphome {
 namespace esp_adf {
 
-static const char *const TAG = "esp_adf";
+static const size_t BUFFER_SIZE = 1024;
 
-void ESPADF::setup() {
-#ifdef USE_ESP_ADF_BOARD
-  ESP_LOGI(TAG, "Start codec chip");
-  audio_board_handle_t board_handle = audio_board_init();
-  audio_hal_ctrl_codec(board_handle->audio_hal, AUDIO_HAL_CODEC_MODE_BOTH, AUDIO_HAL_CTRL_START);
-#endif
-}
+enum class TaskEventType : uint8_t {
+  STARTING = 0,
+  STARTED,
+  RUNNING,
+  STOPPING,
+  STOPPED,
+  WARNING = 255,
+};
 
-float ESPADF::get_setup_priority() const { return setup_priority::HARDWARE; }
+struct TaskEvent {
+  TaskEventType type;
+  esp_err_t err;
+};
+
+struct CommandEvent {
+  bool stop;
+};
+
+struct DataEvent {
+  bool stop;
+  size_t len;
+  uint8_t data[BUFFER_SIZE];
+};
+
+class ESPADF;
+
+class ESPADFPipeline : public Parented<ESPADF> {};
+
+class ESPADF : public Component {
+ public:
+  void setup() override;
+
+  float get_setup_priority() const override;
+
+  void lock() { this->lock_.lock(); }
+  bool try_lock() { return this->lock_.try_lock(); }
+  void unlock() { this->lock_.unlock(); }
+
+ protected:
+  Mutex lock_;
+};
 
 }  // namespace esp_adf
 }  // namespace esphome
