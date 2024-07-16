@@ -103,10 +103,10 @@ async def to_code(config):
             "https://github.com/espressif/esp-adf/raw/v2.5/idf_patches/idf_v4.4_freertos.patch",
         )
         esp32.add_extra_build_file(
-            "src/esphome/components/esp_adf/media_player/esp_adf_media_palyer.cpp",
-            "https://raw.githubusercontent.com/dwitgen/test_adf/main/components/esp_adf/media_player/esp_adf_media_palyer.cpp",
+            "src/esphome/components/esp_adf/media_player/esp_adf_media_player.cpp",
+            "https://raw.githubusercontent.com/dwitgen/test_adf/main/components/esp_adf/media_player/esp_adf_media_player.cpp",
         )
         esp32.add_extra_build_file(
-            "src/esphome/components/esp_adf/media_player/esp_adf_media_palyer.h",
-            "https://raw.githubusercontent.com/dwitgen/test_adf/main/components/esp_adf/media_player/esp_adf_media_palyer.h",
+            "src/esphome/components/esp_adf/media_player/esp_adf_media_player.h",
+            "https://raw.githubusercontent.com/dwitgen/test_adf/main/components/esp_adf/media_player/esp_adf_media_player.h",
         )
