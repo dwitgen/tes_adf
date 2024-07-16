@@ -1,27 +1,21 @@
-#include "../esp_adf.h"
 #include "esp_adf_media_player.h"
 
 #ifdef USE_ESP_IDF
 
-#include <freertos/FreeRTOS.h>
-#include <freertos/queue.h>
-
-#include "esphome/components/speaker/speaker.h"
-#include "esphome/core/component.h"
-#include "esphome/core/helpers.h"
-#include "esphome/components/sensor/sensor.h"
-
-#include <audio_element.h>
-#include <audio_pipeline.h>
-#include <audio_hal.h>
-#include "esp_peripherals.h"
-#include "periph_adc_button.h"
-#include "input_key_service.h"
-#include <board.h>
-#include <esp_event.h>  
+#include "esp_log.h"
+#include "http_stream.h"
+#include "mp3_decoder.h"
+#include "filter_resample.h"
 
 namespace esphome {
 namespace esp_adf {
+
+static const char *TAG = "ESPADFMediaPlayer";
+
+void ESPADFMediaPlayer::register_component() {
+  App.register_component(this);
+  App.register_media_player(this);
+}
 
 void ESPADFMediaPlayer::setup() {
   // Initialize ESP-ADF components
@@ -54,16 +48,12 @@ void ESPADFMediaPlayer::loop() {
 }
 
 void ESPADFMediaPlayer::dump_config() {
-  ESP_LOGI("ESPADFMediaPlayer", "I2S Audio Media Player:");
+  ESP_LOGI(TAG, "I2S Audio Media Player:");
 }
 
 void ESPADFMediaPlayer::set_dout_pin(uint8_t pin) {
   this->dout_pin_ = pin;
 }
-
-//void ESPADFMediaPlayer::set_mute_pin(GPIOPin *mute_pin) {
-//  this->mute_pin_ = mute_pin;
-//}
 
 void ESPADFMediaPlayer::set_external_dac_channels(uint8_t channels) {
   this->external_dac_channels_ = channels;
@@ -72,10 +62,6 @@ void ESPADFMediaPlayer::set_external_dac_channels(uint8_t channels) {
 media_player::MediaPlayerTraits ESPADFMediaPlayer::get_traits() {
   return media_player::MediaPlayerTraits();
 }
-
-//bool ESPADFMediaPlayer::is_muted() const {
-//  return this->muted_;
-//}
 
 void ESPADFMediaPlayer::start_() {
   audio_pipeline_run(pipeline_);
@@ -92,30 +78,20 @@ void ESPADFMediaPlayer::play_() {
 }
 
 void ESPADFMediaPlayer::set_volume_(float volume, bool publish) {
-  audio_element_set_volume(i2s_stream_writer_, volume * 100);
+  // Implement volume control based on your specific requirements
+  // This function might not be necessary for ESP-ADF
   if (publish) {
     this->publish_state();
   }
 }
 
-//void ESPADFMediaPlayer::mute_() {
-//  this->set_volume_(0, false);
-//  this->muted_ = true;
-//  this->publish_state();
-//}
-
-//void ESPADFMediaPlayer::unmute_() {
-//  this->set_volume_(this->unmuted_volume_, false);
-//  this->muted_ = false;
-//  this->publish_state();
-//}
-
 void ESPADFMediaPlayer::control(const media_player::MediaPlayerCall &call) {
-  if (call.get_state().has_value()) {
-    switch (call.get_state().value()) {
+  if (call.get_media_player_state().has_value()) {
+    switch (call.get_media_player_state().value()) {
       case media_player::MEDIA_PLAYER_STATE_PLAYING:
         this->play_();
         break;
+      case media_player::MEDIA_PLAYER_STATE_PAUSED:
       case media_player::MEDIA_PLAYER_STATE_STOPPED:
         this->stop_();
         break;
