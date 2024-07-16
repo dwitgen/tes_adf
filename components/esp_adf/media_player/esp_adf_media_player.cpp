@@ -102,7 +102,16 @@ void ESPADFMediaPlayer::control(const media_player::MediaPlayerCall &call) {
     audio_element_set_uri(http_stream_reader_, this->current_url_.value().c_str());
     this->play_();
   }
+}
 
+bool ESPADFMediaPlayer::is_muted() const {
+  // Implement the logic to determine if the media player is muted
+  return false;  // Change this as per your requirement
+}
+
+void ESPADFMediaPlayer::register_component() {
+  App.register_component(this);
+  App.register_media_player(this);
 }
 
 esp_err_t ESPADFMediaPlayer::configure_i2s_stream_writer() {
