@@ -80,13 +80,13 @@ void ESPADFMediaPlayer::play_() {
   audio_pipeline_run(pipeline_);
 }
 
-void ESPADFMediaPlayer::set_volume_(float volume, bool publish) {
+//void ESPADFMediaPlayer::set_volume_(float volume, bool publish) {
   // Implement volume control based on your specific requirements
   // This function might not be necessary for ESP-ADF
-  if (publish) {
-    this->publish_state();
-  }
-}
+  //if (publish) {
+  //  this->publish_state();
+  //}
+//}
 
 void ESPADFMediaPlayer::control(const media_player::MediaPlayerCall &call) {
   if (call.get_state().has_value()) {
