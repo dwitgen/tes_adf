@@ -11,6 +11,7 @@
 #include "esphome/core/component.h"
 #include "esphome/core/helpers.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/core/application.h" 
 
 #include <audio_element.h>
 #include <audio_pipeline.h>
