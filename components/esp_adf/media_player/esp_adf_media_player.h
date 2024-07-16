@@ -19,21 +19,22 @@
 #include "periph_adc_button.h"
 #include "input_key_service.h"
 #include <board.h>
-#include <esp_event.h>  
+#include <esp_event.h>
 
 namespace esphome {
 namespace esp_adf {
 
-class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer, public Component {
+class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer {
  public:
   void setup() override;
   void loop() override;
   void dump_config() override;
   void set_dout_pin(uint8_t pin);
-  //void set_mute_pin(GPIOPin *mute_pin);
   void set_external_dac_channels(uint8_t channels);
   media_player::MediaPlayerTraits get_traits() override;
-  //bool is_muted() const override;
+  bool is_muted() const override;
+
+  static void register_component();
 
  protected:
   void control(const media_player::MediaPlayerCall &call) override;
@@ -41,8 +42,6 @@ class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer, pu
   void stop_();
   void play_();
   void set_volume_(float volume, bool publish = true);
-  //void mute_();
-  //void unmute_();
 
  private:
   esp_err_t configure_i2s_stream_writer();
@@ -57,9 +56,6 @@ class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer, pu
   audio_element_handle_t i2s_stream_writer_;
 
   uint8_t dout_pin_{0};
-  //GPIOPin *mute_pin_{nullptr};
-  //bool muted_{false};
-  //float unmuted_volume_{0};
   uint8_t external_dac_channels_{0};
   optional<std::string> current_url_{};
 };
