@@ -41,7 +41,7 @@ class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer {
   void start_();
   void stop_();
   void play_();
-  void set_volume_(float volume, bool publish = true);
+  void pause_();
 
  private:
   esp_err_t configure_i2s_stream_writer();
