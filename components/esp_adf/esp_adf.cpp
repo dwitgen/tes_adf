@@ -21,11 +21,10 @@ void ESPADF::setup() {
   audio_board_handle_t board_handle = audio_board_init();
   audio_hal_ctrl_codec(board_handle->audio_hal, AUDIO_HAL_CODEC_MODE_BOTH, AUDIO_HAL_CTRL_START);
 #endif
+// Create and register the ESPADFMediaPlayer component
+  auto *media_player_instance = new ESPADFMediaPlayer();
+  App.register_component(media_player_instance);
 }
-
-// Create and setup the ESPADFMediaPlayer component
-auto *media_player_instance = new ESPADFMediaPlayer();
-media_player_instance->setup(); 
 
 float ESPADF::get_setup_priority() const { return setup_priority::HARDWARE; }
 
