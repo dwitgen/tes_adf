@@ -1,5 +1,5 @@
 #include "../esp_adf.h"
-#include "ESPADFMediaPlayer.h"
+#include "esp_adf_media_player.h"
 
 #ifdef USE_ESP_IDF
 
