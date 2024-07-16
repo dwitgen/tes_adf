@@ -7,7 +7,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
 
-#include "esphome/components/speaker/speaker.h"
+#include "esphome/components/media_player/media_player.h"
 #include "esphome/core/component.h"
 #include "esphome/core/helpers.h"
 #include "esphome/components/sensor/sensor.h"
