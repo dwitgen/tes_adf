@@ -58,7 +58,9 @@ void ESPADFMediaPlayer::set_external_dac_channels(uint8_t channels) {
 }
 
 media_player::MediaPlayerTraits ESPADFMediaPlayer::get_traits() {
-  return media_player::MediaPlayerTraits();
+  media_player::MediaPlayerTraits traits;
+  traits.set_supports_pause(true);
+  return traits;
 }
 
 void ESPADFMediaPlayer::start_() {
@@ -71,24 +73,36 @@ void ESPADFMediaPlayer::stop_() {
 }
 
 void ESPADFMediaPlayer::play_() {
+  audio_pipeline_resume(pipeline_);
+}
+
+void ESPADFMediaPlayer::pause_() {
   audio_pipeline_pause(pipeline_);
-  audio_pipeline_run(pipeline_);
 }
 
 void ESPADFMediaPlayer::control(const media_player::MediaPlayerCall &call) {
-  if (call.get_state().has_value()) {
-    switch (call.get_state().value()) {
-      case media_player::MEDIA_PLAYER_STATE_PLAYING:
+  if (call.get_command().has_value()) {
+    switch (call.get_command().value()) {
+      case media_player::MEDIA_PLAYER_COMMAND_PLAY:
         this->play_();
         break;
-      case media_player::MEDIA_PLAYER_STATE_PAUSED:
-      case media_player::MEDIA_PLAYER_STATE_IDLE:
+      case media_player::MEDIA_PLAYER_COMMAND_PAUSE:
+        this->pause_();
+        break;
+      case media_player::MEDIA_PLAYER_COMMAND_STOP:
         this->stop_();
         break;
       default:
         break;
     }
   }
+
+  if (call.get_media_url().has_value()) {
+    this->current_url_ = call.get_media_url().value();
+    audio_element_set_uri(http_stream_reader_, this->current_url_.value().c_str());
+    this->play_();
+  }
+
 }
 
 esp_err_t ESPADFMediaPlayer::configure_i2s_stream_writer() {
