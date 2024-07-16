@@ -35,7 +35,7 @@ class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer {
   media_player::MediaPlayerTraits get_traits() override;
   bool is_muted() const override;
 
-  static void register_component();
+  void register_component();
 
  protected:
   void control(const media_player::MediaPlayerCall &call) override;
