@@ -1,4 +1,5 @@
 #include "esp_adf_media_player.h"
+#include "esphome/core/application.h" 
 
 #ifdef USE_ESP_IDF
 
