@@ -12,10 +12,10 @@ namespace esp_adf {
 
 static const char *TAG = "ESPADFMediaPlayer";
 
-//void ESPADFMediaPlayer::register_component() {
-//  App.register_component(this);
-//  App.register_media_player(this);
-//}
+void ESPADFMediaPlayer::register_component() {
+  App.register_component(this);
+  App.register_media_player(this);
+}
 
 void ESPADFMediaPlayer::setup() {
   // Initialize ESP-ADF components
@@ -41,6 +41,9 @@ void ESPADFMediaPlayer::setup() {
   if (current_url_.has_value()) {
     audio_element_set_uri(http_stream_reader_, current_url_.value().c_str());
   }
+
+  // Register the component with the App
+  this->register_component();
 }
 
 void ESPADFMediaPlayer::loop() {
@@ -86,8 +89,8 @@ void ESPADFMediaPlayer::set_volume_(float volume, bool publish) {
 }
 
 void ESPADFMediaPlayer::control(const media_player::MediaPlayerCall &call) {
-  if (call.get_media_player_state().has_value()) {
-    switch (call.get_media_player_state().value()) {
+  if (call.get_state().has_value()) {
+    switch (call.get_state().value()) {
       case media_player::MEDIA_PLAYER_STATE_PLAYING:
         this->play_();
         break;
