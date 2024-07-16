@@ -1,5 +1,6 @@
 #include "esp_adf.h"
 #include "esphome/core/defines.h"
+#include "media_player/esp_adf_media_player.h"
 
 #ifdef USE_ESP_IDF
 
