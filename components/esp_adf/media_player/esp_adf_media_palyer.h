@@ -24,7 +24,7 @@
 namespace esphome {
 namespace esp_adf {
 
-class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer, public I2SAudioOut {
+class ESPADFMediaPlayer : public Component, public media_player::MediaPlayer, public Component {
  public:
   void setup() override;
   void loop() override;
