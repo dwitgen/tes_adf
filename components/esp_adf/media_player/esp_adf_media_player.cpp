@@ -61,9 +61,9 @@ void ESPADFMediaPlayer::set_dout_pin(uint8_t pin) {
   this->dout_pin_ = pin;
 }
 
-void ESPADFMediaPlayer::set_mute_pin(GPIOPin *mute_pin) {
-  this->mute_pin_ = mute_pin;
-}
+//void ESPADFMediaPlayer::set_mute_pin(GPIOPin *mute_pin) {
+//  this->mute_pin_ = mute_pin;
+//}
 
 void ESPADFMediaPlayer::set_external_dac_channels(uint8_t channels) {
   this->external_dac_channels_ = channels;
@@ -73,9 +73,9 @@ media_player::MediaPlayerTraits ESPADFMediaPlayer::get_traits() {
   return media_player::MediaPlayerTraits();
 }
 
-bool ESPADFMediaPlayer::is_muted() const {
-  return this->muted_;
-}
+//bool ESPADFMediaPlayer::is_muted() const {
+//  return this->muted_;
+//}
 
 void ESPADFMediaPlayer::start_() {
   audio_pipeline_run(pipeline_);
@@ -98,17 +98,17 @@ void ESPADFMediaPlayer::set_volume_(float volume, bool publish) {
   }
 }
 
-void ESPADFMediaPlayer::mute_() {
-  this->set_volume_(0, false);
-  this->muted_ = true;
-  this->publish_state();
-}
+//void ESPADFMediaPlayer::mute_() {
+//  this->set_volume_(0, false);
+//  this->muted_ = true;
+//  this->publish_state();
+//}
 
-void ESPADFMediaPlayer::unmute_() {
-  this->set_volume_(this->unmuted_volume_, false);
-  this->muted_ = false;
-  this->publish_state();
-}
+//void ESPADFMediaPlayer::unmute_() {
+//  this->set_volume_(this->unmuted_volume_, false);
+//  this->muted_ = false;
+//  this->publish_state();
+//}
 
 void ESPADFMediaPlayer::control(const media_player::MediaPlayerCall &call) {
   if (call.get_state().has_value()) {
