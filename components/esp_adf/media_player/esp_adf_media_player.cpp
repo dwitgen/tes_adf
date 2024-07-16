@@ -12,10 +12,10 @@ namespace esp_adf {
 
 static const char *TAG = "ESPADFMediaPlayer";
 
-void ESPADFMediaPlayer::register_component() {
-  App.register_component(this);
-  App.register_media_player(this);
-}
+//void ESPADFMediaPlayer::register_component() {
+//  App.register_component(this);
+//  App.register_media_player(this);
+//}
 
 void ESPADFMediaPlayer::setup() {
   // Initialize ESP-ADF components
