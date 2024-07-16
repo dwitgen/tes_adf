@@ -24,9 +24,12 @@ void ESPADF::setup() {
 }
 
 // Register the ESPADFMediaPlayer component
-ESPADFMediaPlayer *media_player = new ESPADFMediaPlayer();
+/*ESPADFMediaPlayer *media_player = new ESPADFMediaPlayer();
 media_player->register_component();
-App.register_component(media_player);
+App.register_component(media_player);*/
+// Register the ESPADFMediaPlayer component
+auto *media_player = new ESPADFMediaPlayer();
+media_player->setup();
 
 float ESPADF::get_setup_priority() const { return setup_priority::HARDWARE; }
 
